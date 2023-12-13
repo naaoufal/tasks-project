@@ -27,9 +27,10 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
-import { AppBar, Toolbar, IconButton } from '@mui/material';
+import { AppBar, Toolbar, IconButton, FormControl } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Modal from '@mui/material/Modal';
+import TextField from '@mui/material/TextField';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -53,7 +54,7 @@ const style = {
     transform: 'translate(-50%, -50%)',
     width: 400,
     bgcolor: 'background.paper',
-    border: '2px solid #000',
+    // border: '2px solid #000',
     boxShadow: 24,
     p: 4,
 };
@@ -153,7 +154,12 @@ export default function AllTasks() {
                     marginBottom: 30,
                 }}>
                     <Grid container justifyContent="flex-end">
-                        <Button variant='contained' onClick={handleAdd}>Add new task</Button>
+                        <Button 
+                             variant="outlined" 
+                             color="primary"
+                            // onClick={handleAdd}
+                            onClick={handleOpen}
+                        >Add new task</Button>
                     </Grid>
                 </div>
                 {/* modal section start */}
@@ -165,11 +171,39 @@ export default function AllTasks() {
                 >
                     <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Text in a modal
+                        Add new task
                     </Typography>
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                    </Typography>
+                    <Box
+                    component="form"
+                    sx={{
+                        '& .MuiTextField-root': { m: 1, width: '25ch' },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                    >
+                        <div style={{
+                            // width: "100%",
+                        }}>
+                            <FormControl fullWidth sx={{ m: 1 }}>
+                                <TextField
+                                    id="outlined-multiline-flexible"
+                                    label="Task title"
+                                    multiline
+                                    maxRows={6}
+                                />
+                                <TextField
+                                    id="full-width-text-field"
+                                    label="Task Description"
+                                    multiline
+                                    // maxRows={6}
+                                    fullWidth
+                                />
+                                <Button variant="outlined" color="success">
+                                    Add
+                                </Button>
+                            </FormControl>
+                        </div>
+                    </Box>
                     </Box>
                 </Modal>
                 {/* modal section end */}
@@ -187,10 +221,10 @@ export default function AllTasks() {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button variant="contained">
+                                        <Button variant="outlined" color="primary" startIcon={<EditIcon />}>
                                             Edit
                                         </Button>
-                                        <Button variant="outlined" color="error" onClick={() => handleDelete(item?.id)}>
+                                        <Button variant="outlined" color="error" onClick={() => handleDelete(item?.id)} startIcon={<DeleteIcon />}>
                                             Delete
                                         </Button>
                                     </CardActions>
