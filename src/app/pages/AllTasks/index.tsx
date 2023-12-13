@@ -19,7 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
-import { AppBar, Toolbar, IconButton, FormControl, Alert } from '@mui/material';
+import { AppBar, Toolbar, IconButton, FormControl, Alert, Select, MenuItem, SelectChangeEvent, InputLabel } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
@@ -80,7 +80,7 @@ export default function AllTasks() {
 
     // add new task to list
     const handleAdd = async () => {
-        console.log("function start", title, desc);
+        // console.log("function start", title, desc);
         if(title && desc !== '') {
             setShowError(false);
             await fetch('http://localhost:3030/tasks', {
@@ -111,7 +111,7 @@ export default function AllTasks() {
 
     // delete task from list :
     const handleDelete = (id: any) => {
-        console.log("ID", id);
+        // console.log("ID", id);
         fetch(`http://localhost:3030/tasks/${id}`, {
             method: 'DELETE',
         });
@@ -120,8 +120,8 @@ export default function AllTasks() {
 
     // patch task from list :
     const handleEdit = async (item: any) => {
-        console.log("new values", objModify, title, desc);
-        if(title && desc !== '') {
+        console.log("new values", objModify, title, desc, stat);
+        if(title && desc && stat !== '') {
             setShowError(false);
             await fetch(`http://localhost:3030/tasks/${item?.id}`, {
                 method: 'PATCH',
@@ -129,7 +129,7 @@ export default function AllTasks() {
                     // id: Math.random()*1000000000,
                     title: title,
                     desc: desc,
-                    status: "Pending" // default value is Pending after well change with completed
+                    status: stat // default value is Pending after well change with completed
                 }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8',
@@ -144,10 +144,17 @@ export default function AllTasks() {
             setTitle('');
             // close modal if all is good :
             setOpenPatch(false);
+            setShowErrorPatch(false);
         } else {
             setShowErrorPatch(true);
         }
     };
+
+    // handle change for select :
+    const [stat, setStat] = React.useState('');
+    const handleChange = (event: SelectChangeEvent) => {
+        setStat(event.target.value as string);
+      };
 
     // const [items, setItems] = useState([]);
 
@@ -281,7 +288,7 @@ export default function AllTasks() {
                                         style={{
                                             width: "100%"
                                         }}
-                                        // defaultValue={objModify?.title}
+                                        defaultValue={objModify?.title}
                                     />
                                     <TextField
                                         id="full-width-text-field"
@@ -291,14 +298,33 @@ export default function AllTasks() {
                                         style={{
                                             width: "100%"
                                         }}
-                                        // defaultValue={objModify?.desc}
+                                        defaultValue={objModify?.desc}
                                     />
+                                    <Box component="form" style={{ marginLeft: 7 }}>
+                                        <FormControl fullWidth>
+                                            <InputLabel id="demo-simple-select-label">Status</InputLabel>
+                                            <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={stat}
+                                                label="Status"
+                                                onChange={handleChange}
+                                                style={{
+                                                    // width: "1%"
+                                                }}
+                                            >
+                                                {/* <MenuItem value="">Select task status</MenuItem> */}
+                                                <MenuItem value="Pending">Pending</MenuItem>
+                                                <MenuItem value="Completed">Completed</MenuItem>
+                                            </Select>
+                                        </FormControl>
+                                    </Box>
                                     <div style={{
                                         paddingTop: 10,
                                         paddingBottom: 20,
                                     }}>
                                         {showErrorPatch
-                                            ? <Alert severity="error">Please enter the title & description</Alert>
+                                            ? <Alert severity="error">Please enter the title & description && status</Alert>
                                             : null
                                         }
                                     </div>
