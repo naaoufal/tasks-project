@@ -288,7 +288,7 @@ export default function AllTasks() {
                                         style={{
                                             width: "100%"
                                         }}
-                                        defaultValue={objModify?.title}
+                                        // defaultValue={objModify?.title}
                                     />
                                     <TextField
                                         id="full-width-text-field"
@@ -298,7 +298,7 @@ export default function AllTasks() {
                                         style={{
                                             width: "100%"
                                         }}
-                                        defaultValue={objModify?.desc}
+                                        // defaultValue={objModify?.desc}
                                     />
                                     <Box component="form" style={{ marginLeft: 7 }}>
                                         <FormControl fullWidth>
