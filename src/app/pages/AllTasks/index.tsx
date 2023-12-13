@@ -1,14 +1,6 @@
 "use client";
 import NavBarComponent from '@/components/Navbar';
-// import {
-//     AppBar,
-//     Accordion,
-//     Card,
-//     CardContent,
-//     Typography,
-//     CardActions,
-//     Button,
-// } from '@mui/material';
+import 'dotenv/config'
 import { TabContext } from '@mui/lab';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -27,7 +19,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Divider from '@mui/material/Divider';
 import InboxIcon from '@mui/icons-material/Inbox';
 import DraftsIcon from '@mui/icons-material/Drafts';
-import { AppBar, Toolbar, IconButton, FormControl } from '@mui/material';
+import { AppBar, Toolbar, IconButton, FormControl, Alert } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
@@ -36,99 +28,88 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import React, { useEffect, useState } from 'react';
 
-const DATA = [
-    {id: 1, name: "task-1", desc: "description task", status: "Pending"},
-    {id: 2, name: "task-2", desc: "description task", status: "Pending"},
-    {id: 3, name: "task-3", desc: "description task", status: "Completed"},
-    {id: 4, name: "task-4", desc: "description task", status: "Pending"},
-    {id: 5, name: "task-5", desc: "description task", status: "Pending"},
-    {id: 6, name: "task-5", desc: "description task", status: "Pending"},
-    {id: 7, name: "task-5", desc: "description task", status: "Completed"},
-];
-
 
 const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: '50%',
     bgcolor: 'background.paper',
     // border: '2px solid #000',
-    boxShadow: 24,
+    boxShadow: 34,
     p: 4,
 };
 
-// async function getData() {
-//     const res = await fetch('https://jsonplaceholder.typicode.com/posts/1')
-//     // The return value is *not* serialized
-//     // You can return Date, Map, Set, etc.
-   
-//     if (!res.ok) {
-//       // This will activate the closest `error.js` Error Boundary
-//       throw new Error('Failed to fetch data');
-//     }
-   
-//     return res.json()
-//   }
 
 export default function AllTasks() {
 
     const [open, setOpen] = useState(false);
-    const [data, setData] = useState(null);
+    const [openPatch, setOpenPatch] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [showErrorPatch, setShowErrorPatch] = useState(false);
+    const [data, setData] = useState([]);
+
+    const [title, setTitle] = useState('');
+    const [desc, setDesc] = useState('');
 
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setOpen(false);
+        setShowError(false);
+    };
 
-    // const fetchData = () => {
-    //     fetch("https://jsonplaceholder.typicode.com/posts/1")
-    //         .then((res) => res.json())
-    //         .then((data) => {
-                // console.log(data);
-    //     })
-    // };
+    const handleOpenPatch = () => setOpenPatch(true);
+    const handleClosePatch = () => {
+        setOpenPatch(false);
+        setShowErrorPatch(false);
+    };
 
-    // const staticData = await fetch(`https://jsonplaceholder.typicode.com/posts/1`, { cache: 'no-store' })
+    const [objModify, setObjModify] = useState({});
 
-    // useEffect(() => {
-    //     fetch('https://jsonplaceholder.typicode.com/posts/1')
-    //     .then((res) => res.json())
-    //     .then((data) => {
-            // console.log(staticData);
-    //         setData(data);
-    //         // setLoading(false)
-    //     })
-    // }, []);
+    console.log("allTasks", process.env.GET_PENDING_TASKS);
 
-    console.log("allTasks", data);
-
+    // fetch all tasks
     const fetchData = async () => {
-        await fetch('http://localhost:3030/tasks')
+        await fetch('http://localhost:3030/tasks?status=Pending')
             .then((res) => res.json())
             .then((items) => {
                 setData(items);
             });
     };
 
+    // add new task to list
     const handleAdd = async () => {
-        console.log("function start");
-        await fetch('http://localhost:3030/tasks', {
-            method: 'POST',
-            body: JSON.stringify({
-                id: 4,
-                title: "task 3",
-                desc: "this is description for tast",
-                status: "Pending"
-            }),
-            headers: {
-                'Content-type': 'application/json; charset=UTF-8',
-            }
-        })
-        .then((res) => res.json())
-        .then((data) => console.log("response for data", data));
-        fetchData();
+        console.log("function start", title, desc);
+        if(title && desc !== '') {
+            setShowError(false);
+            await fetch('http://localhost:3030/tasks', {
+                method: 'POST',
+                body: JSON.stringify({
+                    id: Math.random()*1000000000,
+                    title: title,
+                    desc: desc,
+                    status: "Pending" // default value is Pending after well change with completed
+                }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                }
+            })
+            .then((res) => res.json())
+            .then((data) => console.log("response for data", data));
+            // load data after adding new entities :
+            fetchData();
+            // clear filed for title and desc state :
+            setDesc(''); 
+            setTitle('');
+            // close modal if all is good :
+            setOpen(false);
+        } else {
+            setShowError(true);
+        }
     };
 
+    // delete task from list :
     const handleDelete = (id: any) => {
         console.log("ID", id);
         fetch(`http://localhost:3030/tasks/${id}`, {
@@ -137,16 +118,49 @@ export default function AllTasks() {
         fetchData();
     };
 
+    // patch task from list :
+    const handleEdit = async () => {
+        console.log("new values", objModify, title, desc);
+        if(title && desc !== '') {
+            setShowError(false);
+            await fetch(`http://localhost:3030/tasks/${objModify?.id}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    // id: Math.random()*1000000000,
+                    title: title,
+                    desc: desc,
+                    status: "Pending" // default value is Pending after well change with completed
+                }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                }
+            })
+            .then((res) => res.json())
+            .then((data) => console.log("response for data", data));
+            // load data after adding new entities :
+            fetchData();
+            // clear filed for title and desc state :
+            setDesc(''); 
+            setTitle('');
+            // close modal if all is good :
+            setOpenPatch(false);
+        } else {
+            setShowErrorPatch(true);
+        }
+    };
+
     // const [items, setItems] = useState([]);
 
-    useEffect(() => { fetchData() }, []);
+    // fetch data when component mounted
+    useEffect(() => { 
+        fetchData(); 
+    }, []);
 
     return(
         <div>
             <NavBarComponent />
             {/* body content */}
             <div style={{
-                // backgroundColor: "red",
                 paddingTop: 20,
                 margin: 20,
             }}>
@@ -157,12 +171,11 @@ export default function AllTasks() {
                         <Button 
                              variant="outlined" 
                              color="primary"
-                            // onClick={handleAdd}
                             onClick={handleOpen}
                         >Add new task</Button>
                     </Grid>
                 </div>
-                {/* modal section start */}
+                {/* modal for add new task */}
                 <Modal
                     open={open}
                     onClose={handleClose}
@@ -170,40 +183,145 @@ export default function AllTasks() {
                     aria-describedby="modal-modal-description"
                 >
                     <Box sx={style}>
-                    <Typography id="modal-modal-title" variant="h6" component="h2">
-                        Add new task
-                    </Typography>
-                    <Box
-                    component="form"
-                    sx={{
-                        '& .MuiTextField-root': { m: 1, width: '25ch' },
-                    }}
-                    noValidate
-                    autoComplete="off"
-                    >
-                        <div style={{
-                            // width: "100%",
-                        }}>
-                            <FormControl fullWidth sx={{ m: 1 }}>
-                                <TextField
-                                    id="outlined-multiline-flexible"
-                                    label="Task title"
-                                    multiline
-                                    maxRows={6}
-                                />
-                                <TextField
-                                    id="full-width-text-field"
-                                    label="Task Description"
-                                    multiline
-                                    // maxRows={6}
-                                    fullWidth
-                                />
-                                <Button variant="outlined" color="success">
-                                    Add
-                                </Button>
-                            </FormControl>
-                        </div>
+                        <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: "center" }}>
+                            Add new task
+                        </Typography>
+                        <Box
+                        component="form"
+                        sx={{
+                            '& .MuiTextField-root': { m: 1, width: '25ch' },
+                        }}
+                        noValidate
+                        autoComplete="off"
+                        >
+                            <div style={{
+                                // width: "100%",
+                                paddingTop: 20,
+                            }}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        id="full-width-text-field"
+                                        label="Task title"
+                                        multiline
+                                        onChange={event => setTitle(event.target.value)}
+                                        style={{
+                                            width: "100%"
+                                        }}
+                                    />
+                                    <TextField
+                                        id="full-width-text-field"
+                                        label="Task Description"
+                                        multiline
+                                        onChange={event => setDesc(event.target.value)}
+                                        style={{
+                                            width: "100%"
+                                        }}
+                                    />
+                                    <div style={{
+                                        paddingTop: 10,
+                                        paddingBottom: 20,
+                                    }}>
+                                        {showError 
+                                            ? <Alert severity="error">Please enter the title & description</Alert>
+                                            : null
+                                        }
+                                    </div>
+                                    <Grid container
+                                        direction="row"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        spacing={2}
+                                    >
+                                        <Grid item>
+                                            <Button variant="outlined" color="primary" onClick={handleAdd}>
+                                                Add
+                                            </Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant="outlined" onClick={handleClose}>
+                                                Close
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </FormControl>
+                            </div>
+                        </Box>
                     </Box>
+                </Modal>
+                {/* modal section end */}
+                {/* modal for patch task */}
+                <Modal
+                    open={openPatch}
+                    onClose={handleClosePatch}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h6" component="h2" style={{ textAlign: "center" }}>
+                        Edit task
+                    </Typography>
+                        <Box
+                        component="form"
+                        sx={{
+                            '& .MuiTextField-root': { m: 1, width: '25ch' },
+                        }}
+                        noValidate
+                        autoComplete="off"
+                        >
+                            <div style={{
+                                // width: "100%",
+                                paddingTop: 20,
+                            }}>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        id="full-width-text-field"
+                                        label="Task title"
+                                        // multiline
+                                        onChange={event => setTitle(event.target.value)}
+                                        style={{
+                                            width: "100%"
+                                        }}
+                                        defaultValue={objModify?.title}
+                                    />
+                                    <TextField
+                                        id="full-width-text-field"
+                                        label="Task Description"
+                                        // multiline
+                                        onChange={event => setDesc(event.target.value)}
+                                        style={{
+                                            width: "100%"
+                                        }}
+                                        defaultValue={objModify?.desc}
+                                    />
+                                    <div style={{
+                                        paddingTop: 10,
+                                        paddingBottom: 20,
+                                    }}>
+                                        {showErrorPatch
+                                            ? <Alert severity="error">Please enter the title & description</Alert>
+                                            : null
+                                        }
+                                    </div>
+                                    <Grid container
+                                        direction="row"
+                                        justifyContent="center"
+                                        alignItems="center"
+                                        spacing={2}
+                                    >
+                                        <Grid item>
+                                            <Button variant="outlined" color="primary" onClick={handleEdit}>
+                                                Edit
+                                            </Button>
+                                        </Grid>
+                                        <Grid item>
+                                            <Button variant="outlined" onClick={handleClosePatch}>
+                                                Close
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
+                                </FormControl>
+                            </div>
+                        </Box>
                     </Box>
                 </Modal>
                 {/* modal section end */}
@@ -221,7 +339,10 @@ export default function AllTasks() {
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button variant="outlined" color="primary" startIcon={<EditIcon />}>
+                                        <Button variant="outlined" color="primary" startIcon={<EditIcon />} onClick={() => {
+                                            setObjModify(item);
+                                            setOpenPatch(true);
+                                        }}>
                                             Edit
                                         </Button>
                                         <Button variant="outlined" color="error" onClick={() => handleDelete(item?.id)} startIcon={<DeleteIcon />}>
@@ -234,23 +355,6 @@ export default function AllTasks() {
                     </Grid>
                 </Box>
             </div>
-            {/* <Box sx={{ width: '90%', bgcolor: 'background.paper' }}>
-                <nav>
-                    <List>
-                        {DATA && DATA.map((item: any) => (
-                            <div style={{
-                                backgroundColor: "red",
-                            }}>
-                                <ListItem disablePadding>
-                                    <ListItemButton>
-                                        <ListItemText primary={item?.name} />
-                                    </ListItemButton>
-                                </ListItem>
-                            </div>
-                        ))}
-                    </List>
-                </nav>
-            </Box> */}
         </div>
     );
 };

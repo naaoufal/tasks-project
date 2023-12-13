@@ -25,3 +25,14 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+
+/* additional css */
+
+.textField-modal {
+  width: 100%;
+}
+
+#full-width-text-field {
+  width: 100%;
+}
