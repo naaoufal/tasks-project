@@ -14,8 +14,8 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-// import Button from '@mui/material/Button';
-import Button from "@material-ui/core/Button";
+import Button from '@mui/material/Button';
+// import Button from "@material-ui/core/Button";
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
@@ -71,10 +71,10 @@ const style = {
 //     return res.json()
 //   }
 
-export default function AllTasks(data: any) {
+export default function AllTasks() {
 
     const [open, setOpen] = useState(false);
-    // const [data, setData] = useState(null)
+    const [data, setData] = useState(null);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -101,7 +101,44 @@ export default function AllTasks(data: any) {
 
     console.log("allTasks", data);
 
+    const fetchData = async () => {
+        await fetch('http://localhost:3030/tasks')
+            .then((res) => res.json())
+            .then((items) => {
+                setData(items);
+            });
+    };
+
+    const handleAdd = async () => {
+        console.log("function start");
+        await fetch('http://localhost:3030/tasks', {
+            method: 'POST',
+            body: JSON.stringify({
+                id: 4,
+                title: "task 3",
+                desc: "this is description for tast",
+                status: "Pending"
+            }),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            }
+        })
+        .then((res) => res.json())
+        .then((data) => console.log("response for data", data));
+        fetchData();
+    };
+
+    const handleDelete = (id: any) => {
+        console.log("ID", id);
+        fetch(`http://localhost:3030/tasks/${id}`, {
+            method: 'DELETE',
+        });
+        fetchData();
+    };
+
     // const [items, setItems] = useState([]);
+
+    useEffect(() => { fetchData() }, []);
 
     return(
         <div>
@@ -116,7 +153,7 @@ export default function AllTasks(data: any) {
                     marginBottom: 30,
                 }}>
                     <Grid container justifyContent="flex-end">
-                        <Button onClick={handleOpen}>Add new task</Button>
+                        <Button variant='contained' onClick={handleAdd}>Add new task</Button>
                     </Grid>
                 </div>
                 {/* modal section start */}
@@ -138,24 +175,24 @@ export default function AllTasks(data: any) {
                 {/* modal section end */}
                 <Box sx={{ flexGrow: 1 }} >
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
-                        {data && data?.data?.map((item: any) => (
-                            <Grid item xs={4} md={4}>
+                        {data && data?.map((item: any) => (
+                            <Grid item xs={4} md={4} key={item?.id}>
                                 <Card sx={{ minWidth: 275 }}>
                                     <CardContent>
                                         <Typography variant="h5" component="div">
                                             {item?.title}
                                         </Typography>
                                         <Typography variant="body2">
-                                            {item?.body}
+                                            {item?.desc}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                    <Button variant="contained">
-                        Edit
-                    </Button>
-                    <Button variant="outlined" color="error">
-  Error
-</Button>
+                                        <Button variant="contained">
+                                            Edit
+                                        </Button>
+                                        <Button variant="outlined" color="error" onClick={() => handleDelete(item?.id)}>
+                                            Delete
+                                        </Button>
                                     </CardActions>
                                 </Card>
                             </Grid>
