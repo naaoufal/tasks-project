@@ -119,11 +119,11 @@ export default function AllTasks() {
     };
 
     // patch task from list :
-    const handleEdit = async () => {
+    const handleEdit = async (item: any) => {
         console.log("new values", objModify, title, desc);
         if(title && desc !== '') {
             setShowError(false);
-            await fetch(`http://localhost:3030/tasks/${objModify?.id}`, {
+            await fetch(`http://localhost:3030/tasks/${item?.id}`, {
                 method: 'PATCH',
                 body: JSON.stringify({
                     // id: Math.random()*1000000000,
@@ -309,7 +309,7 @@ export default function AllTasks() {
                                         spacing={2}
                                     >
                                         <Grid item>
-                                            <Button variant="outlined" color="primary" onClick={handleEdit}>
+                                            <Button variant="outlined" color="primary" onClick={() => handleEdit(objModify)}>
                                                 Edit
                                             </Button>
                                         </Grid>
