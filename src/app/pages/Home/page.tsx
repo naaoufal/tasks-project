@@ -27,6 +27,8 @@ import TextField from '@mui/material/TextField';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 
 const style = {
@@ -42,7 +44,9 @@ const style = {
 };
 
 
-export default function AllTasks() {
+export default function Home() {
+
+    const router = useRouter();
 
     const [open, setOpen] = useState(false);
     const [openPatch, setOpenPatch] = useState(false);
@@ -67,7 +71,7 @@ export default function AllTasks() {
 
     const [objModify, setObjModify] = useState({});
 
-    console.log("allTasks", process.env.GET_PENDING_TASKS);
+    // console.log("routers", router);
 
     // fetch all tasks
     const fetchData = async () => {
@@ -181,6 +185,7 @@ export default function AllTasks() {
                             onClick={handleOpen}
                         >Add new task</Button>
                     </Grid>
+                    <Button onClick={() => router.push("/finishedTasks")}>Finished Tasks</Button>
                 </div>
                 {/* modal for add new task */}
                 <Modal

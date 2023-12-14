@@ -7,46 +7,58 @@
       "status": "Pending"
     },
     {
-      "id": 2,
-      "title": "task 2",
-      "desc": "this is task description",
-      "status": "Completed"
-    },
-    {
       "id": 4,
       "title": "fix alert",
       "desc": "this task is generaly for fixing alert problems",
       "status": "Pending"
     },
     {
-      "id": 410706127.96274465,
-      "title": "task 4",
-      "desc": "system management overlay",
+      "id": 858899972.4763306,
+      "title": "service down",
+      "desc": "check if service mongodb is down",
       "status": "Pending"
     },
     {
-      "id": 667961027.2609513,
-      "title": "test 20",
-      "desc": "fuejrgnerklmg;ernjgerjngmer",
-      "status": "Pending"
-    },
-    {
-      "id": 953087533.5455418,
-      "title": "task 50",
-      "desc": "this is description for task 50",
-      "status": "Pending"
-    },
-    {
-      "id": 489656253.38894457,
-      "title": "done task",
-      "desc": "this is done task",
+      "id": 598350341.3350357,
+      "title": "material ui",
+      "desc": "try to import material ui on your project",
       "status": "Completed"
     },
     {
-      "id": 430349018.5098229,
-      "title": "task 6",
-      "desc": "task 6",
-      "status": "Pending"
+      "id": 122570319.88206735,
+      "title": "add new task",
+      "desc": "create a function using nextjs to add new task on the list",
+      "status": "Completed"
+    },
+    {
+      "id": 994582590.095984,
+      "title": "delete task",
+      "desc": "create a function that can delete a task from your list",
+      "status": "Completed"
+    },
+    {
+      "id": 760424868.828457,
+      "title": "update task",
+      "desc": "create a function to update a task from the list",
+      "status": "Completed"
+    },
+    {
+      "id": 100523370.10752988,
+      "title": "fetch tasks",
+      "desc": "create a function to fetch data from jsondb server",
+      "status": "Completed"
+    },
+    {
+      "id": 14998417.70839927,
+      "title": "routing nextjs",
+      "desc": "create a combination of routing between two pages",
+      "status": "Completed"
+    },
+    {
+      "id": 413219505.75687194,
+      "title": "mock api",
+      "desc": "use mock API like json placeholder to test with fake datas",
+      "status": "Completed"
     }
   ]
 }
