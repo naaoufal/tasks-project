@@ -184,6 +184,7 @@ export default function Home() {
                              color="primary"
                             onClick={handleOpen}
                         >Add new task</Button>
+                        <text>test test</text>
                     </Grid>
                     <Button onClick={() => router.push("/finishedTasks")}>Finished Tasks</Button>
                 </div>
