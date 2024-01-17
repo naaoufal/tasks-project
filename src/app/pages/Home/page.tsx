@@ -29,6 +29,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import ReactGA from "react-ga4";
 
 
 const style = {
@@ -72,6 +73,15 @@ export default function Home() {
     const [objModify, setObjModify] = useState({});
 
     // console.log("routers", router);
+
+    // handle google events :
+    const handleClickGoogle = () => {
+        ReactGA.event({
+            'action': 'handle submit',
+            'category': 'submit',
+            'label': 'label'
+        });
+    };
 
     // fetch all tasks
     const fetchData = async () => {
@@ -180,11 +190,11 @@ export default function Home() {
                 }}>
                     <Grid container justifyContent="flex-end">
                         <Button 
-                             variant="outlined" 
-                             color="primary"
+                            variant="outlined" 
+                            color="primary"
                             onClick={handleOpen}
                         >Add new task</Button>
-                        <text>test test</text>
+                        <Button variant='outlined' color='secondary' onClick={handleClickGoogle}>Test google</Button>
                     </Grid>
                     <Button onClick={() => router.push("/finishedTasks")}>Finished Tasks</Button>
                 </div>
