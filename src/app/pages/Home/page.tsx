@@ -375,8 +375,8 @@ export default function Home() {
                 <Box sx={{ flexGrow: 1 }} >
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                         {data && data?.map((item: any) => (
-                            <Box onClick={handleBoxClick}>
-                                <Grid item xs={4} md={4} key={item?.id}>
+                            <Box onClick={handleBoxClick} key={item?.id}>
+                                <Grid item xs={4} md={4}>
                                     <Card sx={{ minWidth: 275 }}>
                                         <CardContent>
                                             <Typography variant="h5" component="div">

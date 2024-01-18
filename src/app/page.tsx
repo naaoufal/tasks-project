@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 
 ReactGA.initialize('G-3EY3XB1VXH');
 
-export default async function Home() {
+export default function Home() {
 
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
