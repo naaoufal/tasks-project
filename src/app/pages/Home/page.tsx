@@ -83,6 +83,11 @@ export default function Home() {
         });
     };
 
+    // handle firebase clicks :
+    const handleBoxClick = async () => {
+        console.log('this is message');
+    };
+
     // fetch all tasks
     const fetchData = async () => {
         await fetch('http://localhost:3030/tasks?status=Pending')
@@ -370,29 +375,31 @@ export default function Home() {
                 <Box sx={{ flexGrow: 1 }} >
                     <Grid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
                         {data && data?.map((item: any) => (
-                            <Grid item xs={4} md={4} key={item?.id}>
-                                <Card sx={{ minWidth: 275 }}>
-                                    <CardContent>
-                                        <Typography variant="h5" component="div">
-                                            {item?.title}
-                                        </Typography>
-                                        <Typography variant="body2">
-                                            {item?.desc}
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button variant="outlined" color="primary" startIcon={<EditIcon />} onClick={() => {
-                                            setObjModify(item);
-                                            setOpenPatch(true);
-                                        }}>
-                                            Edit
-                                        </Button>
-                                        <Button variant="outlined" color="error" onClick={() => handleDelete(item?.id)} startIcon={<DeleteIcon />}>
-                                            Delete
-                                        </Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
+                            <Box onClick={handleBoxClick}>
+                                <Grid item xs={4} md={4} key={item?.id}>
+                                    <Card sx={{ minWidth: 275 }}>
+                                        <CardContent>
+                                            <Typography variant="h5" component="div">
+                                                {item?.title}
+                                            </Typography>
+                                            <Typography variant="body2">
+                                                {item?.desc}
+                                            </Typography>
+                                        </CardContent>
+                                        <CardActions>
+                                            <Button variant="outlined" color="primary" startIcon={<EditIcon />} onClick={() => {
+                                                setObjModify(item);
+                                                setOpenPatch(true);
+                                            }}>
+                                                Edit
+                                            </Button>
+                                            <Button variant="outlined" color="error" onClick={() => handleDelete(item?.id)} startIcon={<DeleteIcon />}>
+                                                Delete
+                                            </Button>
+                                        </CardActions>
+                                    </Card>
+                                </Grid>
+                            </Box>
                         ))}
                     </Grid>
                 </Box>
